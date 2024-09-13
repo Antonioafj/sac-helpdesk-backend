@@ -15,17 +15,22 @@ import java.util.UUID;
 public class UserEntity {
 
     @Id
-    @Column(name = "id")
+    @Column (name = "id")
     private UUID id;
 
+    @Column(name = "username", nullable = false)
     private String username;
 
+    @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "email", nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private boolean active;
 
     @Column(name = "created_by")
