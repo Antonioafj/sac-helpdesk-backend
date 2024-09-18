@@ -7,25 +7,25 @@ import br.com.manualdaprogramacao.helpdesk.mapper.UserMapper;
 import br.com.manualdaprogramacao.helpdesk.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/users")
 public class UserController {
 
         private final UserService userService;
 
+
         private final UserMapper mapper;
 
         @PostMapping
         public ResponseEntity<UserDto> create(@RequestBody CreateUserDto request){
                 User domain = mapper.toDomain(request);
-                UserDto createUser = mapper.toDto(userService.createUser(domain));
-                 return ResponseEntity.ok(createUser);
+                UserDto createdUser = mapper.toDto(userService.createUser(domain));
+                 return ResponseEntity.ok(createdUser);
     }
 }
