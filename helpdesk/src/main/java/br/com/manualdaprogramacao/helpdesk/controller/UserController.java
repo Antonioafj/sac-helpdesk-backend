@@ -5,6 +5,8 @@ import br.com.manualdaprogramacao.helpdesk.dto.CreateUserDto;
 import br.com.manualdaprogramacao.helpdesk.dto.UserDto;
 import br.com.manualdaprogramacao.helpdesk.mapper.UserMapper;
 import br.com.manualdaprogramacao.helpdesk.service.UserService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@OpenAPIDefinition
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/users")
@@ -22,6 +25,7 @@ public class UserController {
 
         private final UserMapper mapper;
 
+        @Operation(description = "This method creates a new user in the system")
         @PostMapping
         public ResponseEntity<UserDto> create(@RequestBody CreateUserDto request){
                 User domain = mapper.toDomain(request);
