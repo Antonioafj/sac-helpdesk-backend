@@ -10,4 +10,4 @@ CREATE TABLE users (
     updated_at timestamp null,
     updated_by uuid null
 
-);
+)

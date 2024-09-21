@@ -9,4 +9,4 @@ CREATE TABLE ticket (
     updated_at timestamp null,
     updated_by uuid null
 
-);
+)
