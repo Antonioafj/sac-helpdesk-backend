@@ -1,6 +1,7 @@
 package br.com.manualdaprogramacao.helpdesk.controller;
 
 import br.com.manualdaprogramacao.helpdesk.domain.Ticket;
+import br.com.manualdaprogramacao.helpdesk.domain.TicketInteraction;
 import br.com.manualdaprogramacao.helpdesk.domain.User;
 import br.com.manualdaprogramacao.helpdesk.dto.*;
 import br.com.manualdaprogramacao.helpdesk.mapper.TicketMapper;
@@ -32,12 +33,14 @@ public class TicketController {
                 TicketDto createdTicket = mapper.toDto(ticketService.createTicket(domain));
                  return ResponseEntity.ok(createdTicket);
     }
+
     @Operation(description = "This method creates a new support ticket interaction in the system")
     @PostMapping(value = "/{id}/interaction")
     public ResponseEntity<TicketDto> create(@PathVariable (name = "id") UUID ticketId, @RequestBody CreateTicketInteractionDto request){
-        TicketInteraction domain = mapper.toDomain();
-        TicketDto createdTicket = mapper.toDto(ticketService.createTicket(domain));
-        return ResponseEntity.ok(createdTicket);
+        TicketInteraction domain = mapper.toDomain(request);
+        domain.setTicketId(ticketId);
+        TicketDto updatedTicket = mapper.toDto(ticketService.ticketInteract(domain));
+        return ResponseEntity.ok(updatedTicket);
     }
 }
 

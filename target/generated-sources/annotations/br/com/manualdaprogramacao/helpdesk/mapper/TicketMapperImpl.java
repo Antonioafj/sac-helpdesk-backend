@@ -1,8 +1,10 @@
 package br.com.manualdaprogramacao.helpdesk.mapper;
 
 import br.com.manualdaprogramacao.helpdesk.domain.Ticket;
+import br.com.manualdaprogramacao.helpdesk.domain.TicketInteraction;
 import br.com.manualdaprogramacao.helpdesk.domain.User;
 import br.com.manualdaprogramacao.helpdesk.dto.CreateTicketDto;
+import br.com.manualdaprogramacao.helpdesk.dto.CreateTicketInteractionDto;
 import br.com.manualdaprogramacao.helpdesk.dto.TicketDto;
 import br.com.manualdaprogramacao.helpdesk.dto.UserDto;
 import br.com.manualdaprogramacao.helpdesk.entity.TicketEntity;
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-09-23T18:24:31-0400",
+    date = "2024-09-25T18:15:50-0400",
     comments = "version: 1.6.0, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
@@ -94,6 +96,20 @@ public class TicketMapperImpl implements TicketMapper {
         ticket.setCreatedByUserId( dto.getCreatedByUserId() );
 
         return ticket;
+    }
+
+    @Override
+    public TicketInteraction toDomain(CreateTicketInteractionDto dto) {
+        if ( dto == null ) {
+            return null;
+        }
+
+        TicketInteraction ticketInteraction = new TicketInteraction();
+
+        ticketInteraction.setMessage( dto.getMessage() );
+        ticketInteraction.setUserId( dto.getUserId() );
+
+        return ticketInteraction;
     }
 
     protected User userEntityToUser(UserEntity userEntity) {
