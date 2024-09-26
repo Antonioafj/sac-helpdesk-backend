@@ -52,20 +52,31 @@ public class TicketService {
                 throw new BusinessException("Ticket not found with provided id");
             }
 
-            UserEntity user = userRepository.findById(domain.getTicketId()).orElse(null);
+            UserEntity user = userRepository.findById(domain.getUserId()).orElse(null);
 
             if (user == null) {
                 throw new BusinessException("Ticket not found with provided id");
             }
+
+            Date now = new Date();
 
             TicketInteractionEntity entity = new TicketInteractionEntity();
             entity.setTicket(ticket);
             entity.setMessage(domain.getMessage());
             entity.setCreatedBy(user);
             entity.setSentByUser(user);
-            entity.setCreateAt(new Date());
-
+            entity.setCreateAt(now);
+            entity.setStatus(domain.getStatus());
             ticketInteractionRepository.save(entity);
+
+            if (ticket.getCreatedBy().getId() != user.getId()){
+                ticket.setSupportUser(user);
+            }
+
+            ticket.setUpdateAt(now);
+            ticket.setUpdateBy(user.getId());
+            ticket.setStatus(domain.getStatus());
+            ticket = ticketRepository.save(ticket);
             return mapper.toDomain(ticket);
     }
 }

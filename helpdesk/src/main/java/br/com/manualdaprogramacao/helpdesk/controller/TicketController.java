@@ -2,12 +2,9 @@ package br.com.manualdaprogramacao.helpdesk.controller;
 
 import br.com.manualdaprogramacao.helpdesk.domain.Ticket;
 import br.com.manualdaprogramacao.helpdesk.domain.TicketInteraction;
-import br.com.manualdaprogramacao.helpdesk.domain.User;
 import br.com.manualdaprogramacao.helpdesk.dto.*;
 import br.com.manualdaprogramacao.helpdesk.mapper.TicketMapper;
-import br.com.manualdaprogramacao.helpdesk.mapper.UserMapper;
 import br.com.manualdaprogramacao.helpdesk.service.TicketService;
-import br.com.manualdaprogramacao.helpdesk.service.UserService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;

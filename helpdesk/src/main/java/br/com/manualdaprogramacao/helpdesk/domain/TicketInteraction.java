@@ -3,6 +3,7 @@ package br.com.manualdaprogramacao.helpdesk.domain;
 
 import br.com.manualdaprogramacao.helpdesk.entity.TicketEntity;
 import br.com.manualdaprogramacao.helpdesk.entity.UserEntity;
+import br.com.manualdaprogramacao.helpdesk.enums.TicketStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,6 +14,8 @@ import java.util.UUID;
 public class TicketInteraction {
 
     private String message;
+
+    private TicketStatus status;
 
     private UUID userId;
 

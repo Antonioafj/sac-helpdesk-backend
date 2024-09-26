@@ -6,7 +6,6 @@ import br.com.manualdaprogramacao.helpdesk.exception.BusinessException;
 import br.com.manualdaprogramacao.helpdesk.mapper.UserMapper;
 import br.com.manualdaprogramacao.helpdesk.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.mapstruct.control.MappingControl;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
