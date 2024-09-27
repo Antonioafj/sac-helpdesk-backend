@@ -13,6 +13,5 @@ public class CreateTicketInteractionDto {
 
     private UUID userId;
 
-    private TicketStatus status;
 
 }

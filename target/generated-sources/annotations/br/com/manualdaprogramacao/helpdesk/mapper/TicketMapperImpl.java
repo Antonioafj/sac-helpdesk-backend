@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-09-26T18:40:36-0400",
+    date = "2024-09-27T16:03:03-0400",
     comments = "version: 1.6.0, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
@@ -107,7 +107,6 @@ public class TicketMapperImpl implements TicketMapper {
         TicketInteraction ticketInteraction = new TicketInteraction();
 
         ticketInteraction.setMessage( dto.getMessage() );
-        ticketInteraction.setStatus( dto.getStatus() );
         ticketInteraction.setUserId( dto.getUserId() );
 
         return ticketInteraction;
