@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -24,6 +25,8 @@ public class TicketInteraction {
     private UUID id;
 
     private TicketEntity ticket;
+
+    private List<Attachment> attachments;
 
     private UserEntity sentByUser;
 

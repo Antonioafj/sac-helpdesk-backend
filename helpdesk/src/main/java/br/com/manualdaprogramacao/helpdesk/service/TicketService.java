@@ -1,7 +1,9 @@
 package br.com.manualdaprogramacao.helpdesk.service;
 
+import br.com.manualdaprogramacao.helpdesk.domain.Attachment;
 import br.com.manualdaprogramacao.helpdesk.domain.Ticket;
 import br.com.manualdaprogramacao.helpdesk.domain.TicketInteraction;
+import br.com.manualdaprogramacao.helpdesk.entity.TicketAttachmentEntity;
 import br.com.manualdaprogramacao.helpdesk.entity.TicketEntity;
 import br.com.manualdaprogramacao.helpdesk.entity.TicketInteractionEntity;
 import br.com.manualdaprogramacao.helpdesk.entity.UserEntity;
@@ -9,12 +11,15 @@ import br.com.manualdaprogramacao.helpdesk.enums.TicketStatus;
 import br.com.manualdaprogramacao.helpdesk.exception.BusinessException;
 import br.com.manualdaprogramacao.helpdesk.exception.ObjectNotFoundException;
 import br.com.manualdaprogramacao.helpdesk.mapper.TicketMapper;
+import br.com.manualdaprogramacao.helpdesk.repository.TicketAttachmentRepository;
 import br.com.manualdaprogramacao.helpdesk.repository.TicketInteractionRepository;
 import br.com.manualdaprogramacao.helpdesk.repository.TicketRepository;
 import br.com.manualdaprogramacao.helpdesk.repository.UserRepository;
+import br.com.manualdaprogramacao.helpdesk.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
 
@@ -26,6 +31,8 @@ public class TicketService {
 
     private final TicketInteractionRepository ticketInteractionRepository;
 
+    private final TicketAttachmentRepository ticketAttachmentRepository;
+
     private final UserRepository userRepository;
 
     private final TicketMapper mapper;
@@ -33,7 +40,6 @@ public class TicketService {
     public Ticket createTicket(Ticket newTicket) {
 
         TicketEntity entity = mapper.toEntity(newTicket);
-
         Optional<UserEntity> createdByUser = userRepository.findById(newTicket.getCreatedByUserId());
         if (createdByUser.isEmpty()) {
             throw new ObjectNotFoundException("User not found whit provided id");
@@ -42,6 +48,25 @@ public class TicketService {
         entity.setStatus(TicketStatus.OPEN);
         entity.setCreateAt(new Date());
         entity = ticketRepository.save(entity);
+
+        if (newTicket.getAttachments() != null && !newTicket.getAttachments().isEmpty()){
+            for(Attachment attachment : newTicket.getAttachments()) {
+                TicketAttachmentEntity ticketAttachmentEntity = new TicketAttachmentEntity();
+                ticketAttachmentEntity.setTicket(entity);
+                ticketAttachmentEntity.setCreatedBy(createdByUser.get());
+                ticketAttachmentEntity.setCreateAt(new Date());
+                ticketAttachmentEntity.setFilename(attachment.getFilename());
+                ticketAttachmentRepository.save(ticketAttachmentEntity);
+
+                byte[] attachmentContent = null;
+                try{
+                    attachmentContent = FileUtils.convertBase64ToByteArray(attachment.getContent());
+                } catch (IOException ex) {
+                    throw new BusinessException("Error saving" + attachment.getFilename() + " file");
+                }
+            }
+        }
+
         return mapper.toDomain(entity);
     }
 
