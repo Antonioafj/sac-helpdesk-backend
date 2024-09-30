@@ -17,8 +17,11 @@ import br.com.manualdaprogramacao.helpdesk.repository.TicketRepository;
 import br.com.manualdaprogramacao.helpdesk.repository.UserRepository;
 import br.com.manualdaprogramacao.helpdesk.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
@@ -37,6 +40,10 @@ public class TicketService {
 
     private final TicketMapper mapper;
 
+    @Value("${helpdesk.attachments-folder}")
+    private String attachmentsFolder;
+
+    @Transactional
     public Ticket createTicket(Ticket newTicket) {
 
         TicketEntity entity = mapper.toEntity(newTicket);
@@ -56,11 +63,14 @@ public class TicketService {
                 ticketAttachmentEntity.setCreatedBy(createdByUser.get());
                 ticketAttachmentEntity.setCreateAt(new Date());
                 ticketAttachmentEntity.setFilename(attachment.getFilename());
-                ticketAttachmentRepository.save(ticketAttachmentEntity);
+                ticketAttachmentEntity = ticketAttachmentRepository.save(ticketAttachmentEntity);
 
                 byte[] attachmentContent = null;
                 try{
                     attachmentContent = FileUtils.convertBase64ToByteArray(attachment.getContent());
+                    String fileName = ticketAttachmentEntity.getId() + "." + FileUtils.extractFileExtensionFromBase64String(attachment.getContent());
+
+                    FileUtils.saveByteArrayToFile(attachmentContent, new File(attachmentsFolder + fileName));
                 } catch (IOException ex) {
                     throw new BusinessException("Error saving" + attachment.getFilename() + " file");
                 }

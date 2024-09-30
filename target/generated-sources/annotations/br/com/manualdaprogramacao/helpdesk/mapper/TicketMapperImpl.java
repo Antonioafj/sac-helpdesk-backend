@@ -1,20 +1,24 @@
 package br.com.manualdaprogramacao.helpdesk.mapper;
 
+import br.com.manualdaprogramacao.helpdesk.domain.Attachment;
 import br.com.manualdaprogramacao.helpdesk.domain.Ticket;
 import br.com.manualdaprogramacao.helpdesk.domain.TicketInteraction;
 import br.com.manualdaprogramacao.helpdesk.domain.User;
+import br.com.manualdaprogramacao.helpdesk.dto.AttachmentDto;
 import br.com.manualdaprogramacao.helpdesk.dto.CreateTicketDto;
 import br.com.manualdaprogramacao.helpdesk.dto.CreateTicketInteractionDto;
 import br.com.manualdaprogramacao.helpdesk.dto.TicketDto;
 import br.com.manualdaprogramacao.helpdesk.dto.UserDto;
 import br.com.manualdaprogramacao.helpdesk.entity.TicketEntity;
 import br.com.manualdaprogramacao.helpdesk.entity.UserEntity;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-09-27T16:03:03-0400",
+    date = "2024-09-29T21:08:36-0400",
     comments = "version: 1.6.0, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
@@ -94,6 +98,7 @@ public class TicketMapperImpl implements TicketMapper {
         ticket.setSubject( dto.getSubject() );
         ticket.setDescription( dto.getDescription() );
         ticket.setCreatedByUserId( dto.getCreatedByUserId() );
+        ticket.setAttachments( attachmentDtoListToAttachmentList( dto.getAttachments() ) );
 
         return ticket;
     }
@@ -108,6 +113,7 @@ public class TicketMapperImpl implements TicketMapper {
 
         ticketInteraction.setMessage( dto.getMessage() );
         ticketInteraction.setUserId( dto.getUserId() );
+        ticketInteraction.setAttachments( attachmentDtoListToAttachmentList( dto.getAttachments() ) );
 
         return ticketInteraction;
     }
@@ -176,5 +182,31 @@ public class TicketMapperImpl implements TicketMapper {
         userEntity.setCreateAt( user.getCreateAt() );
 
         return userEntity;
+    }
+
+    protected Attachment attachmentDtoToAttachment(AttachmentDto attachmentDto) {
+        if ( attachmentDto == null ) {
+            return null;
+        }
+
+        Attachment attachment = new Attachment();
+
+        attachment.setFilename( attachmentDto.getFilename() );
+        attachment.setContent( attachmentDto.getContent() );
+
+        return attachment;
+    }
+
+    protected List<Attachment> attachmentDtoListToAttachmentList(List<AttachmentDto> list) {
+        if ( list == null ) {
+            return null;
+        }
+
+        List<Attachment> list1 = new ArrayList<Attachment>( list.size() );
+        for ( AttachmentDto attachmentDto : list ) {
+            list1.add( attachmentDtoToAttachment( attachmentDto ) );
+        }
+
+        return list1;
     }
 }
