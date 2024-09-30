@@ -8,6 +8,8 @@ import br.com.manualdaprogramacao.helpdesk.dto.TicketDto;
 import br.com.manualdaprogramacao.helpdesk.entity.TicketEntity;
 import org.mapstruct.Mapper;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface TicketMapper {
 
@@ -21,4 +23,25 @@ public interface TicketMapper {
 
     TicketInteraction toDomain(CreateTicketInteractionDto dto);
 
+    List<Ticket> toDomain(List<TicketEntity> entitiesl);
+
+    List<TicketDto> toDto(List<Ticket> domains);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -56,31 +57,22 @@ public class TicketService {
         entity.setCreateAt(new Date());
         entity = ticketRepository.save(entity);
 
-        if (newTicket.getAttachments() != null && !newTicket.getAttachments().isEmpty()){
-            for(Attachment attachment : newTicket.getAttachments()) {
+        if (newTicket.getAttachments() != null && !newTicket.getAttachments().isEmpty()) {
+            for (Attachment attachment : newTicket.getAttachments()) {
                 TicketAttachmentEntity ticketAttachmentEntity = new TicketAttachmentEntity();
                 ticketAttachmentEntity.setTicket(entity);
                 ticketAttachmentEntity.setCreatedBy(createdByUser.get());
                 ticketAttachmentEntity.setCreateAt(new Date());
                 ticketAttachmentEntity.setFilename(attachment.getFilename());
                 ticketAttachmentEntity = ticketAttachmentRepository.save(ticketAttachmentEntity);
-
-                byte[] attachmentContent = null;
-                try{
-                    attachmentContent = FileUtils.convertBase64ToByteArray(attachment.getContent());
-                    String fileName = ticketAttachmentEntity.getId() + "." + FileUtils.extractFileExtensionFromBase64String(attachment.getContent());
-
-                    FileUtils.saveByteArrayToFile(attachmentContent, new File(attachmentsFolder + fileName));
-                } catch (IOException ex) {
-                    throw new BusinessException("Error saving" + attachment.getFilename() + " file");
-                }
+                saveFileToDisk(ticketAttachmentEntity, attachment.getContent());
             }
         }
 
-        return mapper.toDomain(entity);
-    }
+            return mapper.toDomain(entity);
+ }
 
-        public Ticket ticketInteract(TicketInteraction domain) {
+        public Ticket ticketInteract(TicketInteraction domain){
             TicketEntity ticket = ticketRepository.findById(domain.getTicketId()).orElse(null);
 
             if (ticket == null) {
@@ -94,9 +86,8 @@ public class TicketService {
             }
 
             Date now = new Date();
-
             TicketStatus status = TicketStatus.IN_PROGRESS;
-            if (ticket.getCreatedBy().getId() != user.getId()){
+            if (ticket.getCreatedBy().getId() != user.getId()) {
                 ticket.setSupportUser(user);
                 status = TicketStatus.AWAITING_CUSTOMER_ANSWER;
             }
@@ -108,14 +99,41 @@ public class TicketService {
             entity.setSentByUser(user);
             entity.setCreateAt(now);
             entity.setStatus(status);
-            ticketInteractionRepository.save(entity);
+            entity = ticketInteractionRepository.save(entity);
 
+            if (domain.getAttachments() != null && !domain.getAttachments().isEmpty()) {
+                for (Attachment attachment : domain.getAttachments()) {
+                    TicketAttachmentEntity ticketAttachmentEntity = new TicketAttachmentEntity();
+                    ticketAttachmentEntity.setTicketInteraction(entity);
+                    ticketAttachmentEntity.setCreatedBy(user);
+                    ticketAttachmentEntity.setCreateAt(new Date());
+                    ticketAttachmentEntity.setFilename(attachment.getFilename());
+                    ticketAttachmentEntity = ticketAttachmentRepository.save(ticketAttachmentEntity);
+                    saveFileToDisk(ticketAttachmentEntity, attachment.getContent());
+        }
+    }
 
             ticket.setUpdateAt(now);
             ticket.setUpdateBy(user.getId());
             ticket.setStatus(status);
             ticket = ticketRepository.save(ticket);
             return mapper.toDomain(ticket);
+         }
+
+private void saveFileToDisk(TicketAttachmentEntity entity, String content){
+        byte[] attachmentContent = null;
+        try{
+            attachmentContent = FileUtils.convertBase64ToByteArray(content);
+            String fileName = entity.getId().toString();
+
+            FileUtils.saveByteArrayToFile(attachmentContent, new File(attachmentsFolder + fileName));
+        } catch (IOException ex) {
+            throw new BusinessException("Error saving" + entity  .getFilename() + " file");
+        }
+    }
+
+    public List<Ticket> listAll() {
+        return mapper.toDomain(ticketRepository.findAll());
     }
 }
 

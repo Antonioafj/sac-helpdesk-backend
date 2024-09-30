@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-09-29T21:08:36-0400",
+    date = "2024-09-30T17:18:28-0400",
     comments = "version: 1.6.0, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
@@ -116,6 +116,34 @@ public class TicketMapperImpl implements TicketMapper {
         ticketInteraction.setAttachments( attachmentDtoListToAttachmentList( dto.getAttachments() ) );
 
         return ticketInteraction;
+    }
+
+    @Override
+    public List<Ticket> toDomain(List<TicketEntity> entitiesl) {
+        if ( entitiesl == null ) {
+            return null;
+        }
+
+        List<Ticket> list = new ArrayList<Ticket>( entitiesl.size() );
+        for ( TicketEntity ticketEntity : entitiesl ) {
+            list.add( toDomain( ticketEntity ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<TicketDto> toDto(List<Ticket> domains) {
+        if ( domains == null ) {
+            return null;
+        }
+
+        List<TicketDto> list = new ArrayList<TicketDto>( domains.size() );
+        for ( Ticket ticket : domains ) {
+            list.add( toDto( ticket ) );
+        }
+
+        return list;
     }
 
     protected User userEntityToUser(UserEntity userEntity) {

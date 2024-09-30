@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @OpenAPIDefinition
@@ -38,6 +39,14 @@ public class TicketController {
         domain.setTicketId(ticketId);
         TicketDto updatedTicket = mapper.toDto(ticketService.ticketInteract(domain));
         return ResponseEntity.ok(updatedTicket);
+    }
+
+    @Operation(description = "This method creates a new support ticket interaction in the system")
+    @GetMapping
+    public ResponseEntity<List<TicketDto>> listAllTickets(){
+
+        List<TicketDto> tickets = mapper.toDto(ticketService.listAll());
+        return ResponseEntity.ok(tickets);
     }
 }
 
