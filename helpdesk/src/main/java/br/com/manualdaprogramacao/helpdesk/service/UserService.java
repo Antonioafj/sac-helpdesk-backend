@@ -2,12 +2,14 @@ package br.com.manualdaprogramacao.helpdesk.service;
 
 import br.com.manualdaprogramacao.helpdesk.domain.User;
 import br.com.manualdaprogramacao.helpdesk.entity.UserEntity;
+import br.com.manualdaprogramacao.helpdesk.exception.AuthorizationException;
 import br.com.manualdaprogramacao.helpdesk.exception.BusinessException;
 import br.com.manualdaprogramacao.helpdesk.mapper.UserMapper;
 import br.com.manualdaprogramacao.helpdesk.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.naming.AuthenticationException;
 import java.util.Date;
 import java.util.Optional;
 
@@ -33,4 +35,35 @@ public class UserService {
         return mapper.toDomain(entity);
     }
 
+    public User findByUsername(String username) {
+
+        UserEntity entity = userRepository.findByUsername(username).orElse(null);
+        if (entity == null) {
+            throw new AuthorizationException("User not found");
+        }
+        return  mapper.toDomain(entity);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -2,6 +2,7 @@ package br.com.manualdaprogramacao.helpdesk.configuration;
 
 
 import br.com.manualdaprogramacao.helpdesk.security.JwtTokenFilter;
+import br.com.manualdaprogramacao.helpdesk.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-        private final UserDatailsServiceImpl userDatailsService;
+        private final UserDetailsServiceImpl userDetailsService;
 
         private final JwtTokenFilter jwtTokenFilter;
 
@@ -37,7 +38,7 @@ public class SecurityConfiguration {
         @Bean
         public DaoAuthenticationProvider authenticationProvider() {
             DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-            authProvider.setUserDetailsService(userDatailsService);
+            authProvider.setUserDetailsService(userDetailsService);
             authProvider.setPasswordEncoder(passwordEncoder());
             return authProvider;
 
