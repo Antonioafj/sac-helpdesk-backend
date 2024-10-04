@@ -7,6 +7,7 @@ import br.com.manualdaprogramacao.helpdesk.exception.BusinessException;
 import br.com.manualdaprogramacao.helpdesk.mapper.UserMapper;
 import br.com.manualdaprogramacao.helpdesk.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.naming.AuthenticationException;
@@ -31,6 +32,7 @@ public class UserService {
 
         UserEntity entity = mapper.toEntity(newUser);
         entity.setCreateAt(new Date());
+        entity.setPassword(new BCryptPasswordEncoder().encode(entity.getPassword()));
         entity = userRepository.save(entity);
         return mapper.toDomain(entity);
     }

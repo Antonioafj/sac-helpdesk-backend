@@ -1,7 +1,12 @@
 package br.com.manualdaprogramacao.helpdesk.security;
 
-import io.jsonwebtoken.JwsHeader;
-import io.jsonwebtoken.impl.crypto.MacSigner;
+import br.com.manualdaprogramacao.helpdesk.dto.AuthResponseDto;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,16 +18,14 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private final String secret;
+    @Value("${jwt.secret}")
+    private String secret;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Value("${jwt.secret}")
-    public JwtUtil(String secret) {
-        this.secret = secret;
-    }
 
-    public AuthResponse generateToken(String username) {
+
+    public AuthResponseDto generateToken(String username) {
         JWTClaimsSet claims = new JWTClaimsSet.Builder()
                 .subject(username)
                 .issueTime(new Date())
@@ -39,7 +42,7 @@ public class JwtUtil {
             signedJWT.sign(signer);
 
             logger.info("- - - - [GENERATED TOKEN]- - - -");
-            return new AuthResponse(username, signedJWT.serialize(), claims.getExpirationTime().getTime());
+            return new AuthResponseDto(username, signedJWT.serialize(), claims.getExpirationTime().getTime());
         } catch (Exception e) {
             logger.error("Error generating token", e);
             throw new RuntimeException("Error generating token", e);
