@@ -31,6 +31,7 @@ import java.util.Optional;
 @Service
 public class TicketService {
 
+
     private final TicketRepository ticketRepository;
 
     private final TicketInteractionRepository ticketInteractionRepository;
@@ -45,14 +46,15 @@ public class TicketService {
     private String attachmentsFolder;
 
     @Transactional
-    public Ticket createTicket(Ticket newTicket) {
+    public Ticket createTicket(Ticket newTicket, String username) {
+
 
         TicketEntity entity = mapper.toEntity(newTicket);
-        Optional<UserEntity> createdByUser = userRepository.findById(newTicket.getCreatedByUserId());
-        if (createdByUser.isEmpty()) {
+        UserEntity createdByUser = userRepository.findByUsername(username).orElse(null);
+        if (createdByUser == null) {
             throw new ObjectNotFoundException("User not found whit provided id");
         }
-        entity.setCreatedBy(createdByUser.get());
+        entity.setCreatedBy(createdByUser);
         entity.setStatus(TicketStatus.OPEN);
         entity.setCreateAt(new Date());
         entity = ticketRepository.save(entity);
@@ -61,7 +63,7 @@ public class TicketService {
             for (Attachment attachment : newTicket.getAttachments()) {
                 TicketAttachmentEntity ticketAttachmentEntity = new TicketAttachmentEntity();
                 ticketAttachmentEntity.setTicket(entity);
-                ticketAttachmentEntity.setCreatedBy(createdByUser.get());
+                ticketAttachmentEntity.setCreatedBy(createdByUser);
                 ticketAttachmentEntity.setCreateAt(new Date());
                 ticketAttachmentEntity.setFilename(attachment.getFilename());
                 ticketAttachmentEntity = ticketAttachmentRepository.save(ticketAttachmentEntity);
@@ -72,14 +74,14 @@ public class TicketService {
             return mapper.toDomain(entity);
  }
 
-        public Ticket ticketInteract(TicketInteraction domain){
+        public Ticket ticketInteract(TicketInteraction domain, String username){
             TicketEntity ticket = ticketRepository.findById(domain.getTicketId()).orElse(null);
 
             if (ticket == null) {
                 throw new BusinessException("Ticket not found with provided id");
             }
 
-            UserEntity user = userRepository.findById(domain.getUserId()).orElse(null);
+            UserEntity user = userRepository.findByUsername(username).orElse(null);
 
             if (user == null) {
                 throw new BusinessException("Ticket not found with provided id");

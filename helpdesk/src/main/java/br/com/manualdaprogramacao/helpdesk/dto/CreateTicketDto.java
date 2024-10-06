@@ -13,8 +13,6 @@ public class CreateTicketDto {
 
     private String description;
 
-    private UUID createdByUserId;
-
     private List<AttachmentDto> attachments;
 
 
