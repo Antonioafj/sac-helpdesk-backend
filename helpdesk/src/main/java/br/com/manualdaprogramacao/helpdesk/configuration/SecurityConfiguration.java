@@ -66,8 +66,8 @@ public class SecurityConfiguration {
             http
                     .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                     .requestMatchers("/swagger-ui.html").permitAll()
-                    .requestMatchers("swagger-ui**/").permitAll()
-                    .requestMatchers("api-docs/**").permitAll()
+                    .requestMatchers("/swagger-ui/**").permitAll()
+                    .requestMatchers("/v3/api-docs/**").permitAll()
                     .requestMatchers("/auth/token").permitAll()
                     .requestMatchers(HttpMethod.POST, "/users").permitAll()
                     .anyRequest().authenticated()
@@ -76,6 +76,8 @@ public class SecurityConfiguration {
                     .logout(withDefaults -> withDefaults.disable())
                     .cors(withDefaults -> withDefaults.disable())
                     .csrf(withDefaults -> withDefaults.disable());
+
+
             http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
             return http.build();
         }
