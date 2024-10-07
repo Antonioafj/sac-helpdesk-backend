@@ -5,7 +5,9 @@ import br.com.manualdaprogramacao.helpdesk.domain.TicketInteraction;
 import br.com.manualdaprogramacao.helpdesk.dto.CreateTicketDto;
 import br.com.manualdaprogramacao.helpdesk.dto.CreateTicketInteractionDto;
 import br.com.manualdaprogramacao.helpdesk.dto.TicketDto;
+import br.com.manualdaprogramacao.helpdesk.dto.TicketInteractionDto;
 import br.com.manualdaprogramacao.helpdesk.entity.TicketEntity;
+import br.com.manualdaprogramacao.helpdesk.entity.TicketInteractionEntity;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -23,9 +25,13 @@ public interface TicketMapper {
 
     TicketInteraction toDomain(CreateTicketInteractionDto dto);
 
-    List<Ticket> toDomain(List<TicketEntity> entitiesl);
+    List<Ticket> toDomain(List<TicketEntity> entities);
 
     List<TicketDto> toDto(List<Ticket> domains);
+
+    List<TicketInteractionDto> toInteractionDto(List<TicketInteraction> domains);
+
+    List<TicketInteraction> toInteractionDomain(List<TicketInteractionEntity> byTicket);
 }
 
 

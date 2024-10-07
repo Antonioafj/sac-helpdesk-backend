@@ -8,8 +8,10 @@ import br.com.manualdaprogramacao.helpdesk.dto.AttachmentDto;
 import br.com.manualdaprogramacao.helpdesk.dto.CreateTicketDto;
 import br.com.manualdaprogramacao.helpdesk.dto.CreateTicketInteractionDto;
 import br.com.manualdaprogramacao.helpdesk.dto.TicketDto;
+import br.com.manualdaprogramacao.helpdesk.dto.TicketInteractionDto;
 import br.com.manualdaprogramacao.helpdesk.dto.UserDto;
 import br.com.manualdaprogramacao.helpdesk.entity.TicketEntity;
+import br.com.manualdaprogramacao.helpdesk.entity.TicketInteractionEntity;
 import br.com.manualdaprogramacao.helpdesk.entity.UserEntity;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-10-06T18:08:17-0400",
+    date = "2024-10-07T17:43:43-0400",
     comments = "version: 1.6.0, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
@@ -117,13 +119,13 @@ public class TicketMapperImpl implements TicketMapper {
     }
 
     @Override
-    public List<Ticket> toDomain(List<TicketEntity> entitiesl) {
-        if ( entitiesl == null ) {
+    public List<Ticket> toDomain(List<TicketEntity> entities) {
+        if ( entities == null ) {
             return null;
         }
 
-        List<Ticket> list = new ArrayList<Ticket>( entitiesl.size() );
-        for ( TicketEntity ticketEntity : entitiesl ) {
+        List<Ticket> list = new ArrayList<Ticket>( entities.size() );
+        for ( TicketEntity ticketEntity : entities ) {
             list.add( toDomain( ticketEntity ) );
         }
 
@@ -139,6 +141,34 @@ public class TicketMapperImpl implements TicketMapper {
         List<TicketDto> list = new ArrayList<TicketDto>( domains.size() );
         for ( Ticket ticket : domains ) {
             list.add( toDto( ticket ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<TicketInteractionDto> toInteractionDto(List<TicketInteraction> domains) {
+        if ( domains == null ) {
+            return null;
+        }
+
+        List<TicketInteractionDto> list = new ArrayList<TicketInteractionDto>( domains.size() );
+        for ( TicketInteraction ticketInteraction : domains ) {
+            list.add( ticketInteractionToTicketInteractionDto( ticketInteraction ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<TicketInteraction> toInteractionDomain(List<TicketInteractionEntity> byTicket) {
+        if ( byTicket == null ) {
+            return null;
+        }
+
+        List<TicketInteraction> list = new ArrayList<TicketInteraction>( byTicket.size() );
+        for ( TicketInteractionEntity ticketInteractionEntity : byTicket ) {
+            list.add( ticketInteractionEntityToTicketInteraction( ticketInteractionEntity ) );
         }
 
         return list;
@@ -234,5 +264,72 @@ public class TicketMapperImpl implements TicketMapper {
         }
 
         return list1;
+    }
+
+    protected AttachmentDto attachmentToAttachmentDto(Attachment attachment) {
+        if ( attachment == null ) {
+            return null;
+        }
+
+        AttachmentDto attachmentDto = new AttachmentDto();
+
+        attachmentDto.setFilename( attachment.getFilename() );
+        attachmentDto.setContent( attachment.getContent() );
+
+        return attachmentDto;
+    }
+
+    protected List<AttachmentDto> attachmentListToAttachmentDtoList(List<Attachment> list) {
+        if ( list == null ) {
+            return null;
+        }
+
+        List<AttachmentDto> list1 = new ArrayList<AttachmentDto>( list.size() );
+        for ( Attachment attachment : list ) {
+            list1.add( attachmentToAttachmentDto( attachment ) );
+        }
+
+        return list1;
+    }
+
+    protected TicketInteractionDto ticketInteractionToTicketInteractionDto(TicketInteraction ticketInteraction) {
+        if ( ticketInteraction == null ) {
+            return null;
+        }
+
+        TicketInteractionDto ticketInteractionDto = new TicketInteractionDto();
+
+        ticketInteractionDto.setMessage( ticketInteraction.getMessage() );
+        ticketInteractionDto.setStatus( ticketInteraction.getStatus() );
+        ticketInteractionDto.setUserId( ticketInteraction.getUserId() );
+        ticketInteractionDto.setTicketId( ticketInteraction.getTicketId() );
+        ticketInteractionDto.setId( ticketInteraction.getId() );
+        ticketInteractionDto.setTicket( toDto( ticketInteraction.getTicket() ) );
+        ticketInteractionDto.setAttachments( attachmentListToAttachmentDtoList( ticketInteraction.getAttachments() ) );
+        ticketInteractionDto.setSentByUser( userToUserDto( ticketInteraction.getSentByUser() ) );
+        ticketInteractionDto.setCreatedBy( userToUserDto( ticketInteraction.getCreatedBy() ) );
+        ticketInteractionDto.setCreateAt( ticketInteraction.getCreateAt() );
+
+        return ticketInteractionDto;
+    }
+
+    protected TicketInteraction ticketInteractionEntityToTicketInteraction(TicketInteractionEntity ticketInteractionEntity) {
+        if ( ticketInteractionEntity == null ) {
+            return null;
+        }
+
+        TicketInteraction ticketInteraction = new TicketInteraction();
+
+        ticketInteraction.setMessage( ticketInteractionEntity.getMessage() );
+        ticketInteraction.setStatus( ticketInteractionEntity.getStatus() );
+        ticketInteraction.setId( ticketInteractionEntity.getId() );
+        ticketInteraction.setTicket( toDomain( ticketInteractionEntity.getTicket() ) );
+        ticketInteraction.setSentByUser( userEntityToUser( ticketInteractionEntity.getSentByUser() ) );
+        ticketInteraction.setCreatedBy( userEntityToUser( ticketInteractionEntity.getCreatedBy() ) );
+        ticketInteraction.setCreateAt( ticketInteractionEntity.getCreateAt() );
+        ticketInteraction.setUpdateBy( ticketInteractionEntity.getUpdateBy() );
+        ticketInteraction.setUpdateAt( ticketInteractionEntity.getUpdateAt() );
+
+        return ticketInteraction;
     }
 }

@@ -1,6 +1,9 @@
 package br.com.manualdaprogramacao.helpdesk.domain;
 
 
+import br.com.manualdaprogramacao.helpdesk.dto.AttachmentDto;
+import br.com.manualdaprogramacao.helpdesk.dto.TicketDto;
+import br.com.manualdaprogramacao.helpdesk.dto.UserDto;
 import br.com.manualdaprogramacao.helpdesk.entity.TicketEntity;
 import br.com.manualdaprogramacao.helpdesk.entity.UserEntity;
 import br.com.manualdaprogramacao.helpdesk.enums.TicketStatus;
@@ -24,19 +27,20 @@ public class TicketInteraction {
 
     private UUID id;
 
-    private TicketEntity ticket;
+    private Ticket ticket;
 
     private List<Attachment> attachments;
 
-    private UserEntity sentByUser;
+    private User sentByUser;
 
-    private UserEntity createdBy;
+    private User createdBy;
 
     private Date createAt;
 
     private UUID updateBy;
 
     private Date updateAt;
+
 }
 
 
